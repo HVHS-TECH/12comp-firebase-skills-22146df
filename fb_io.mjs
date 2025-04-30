@@ -70,7 +70,7 @@ function fb_login(){
         prompt: 'select_account' });
 
         signInWithPopup(AUTH, PROVIDER).then((result) => {
-        console.log ("User Signed in", )
+        console.log ("User Signed in", result.user)
         })
     
         .catch((error) => {
