@@ -20,9 +20,10 @@ console.log('%c main.mjs',
 // Input: n/a
 // Return: n/a
 /******************************************************/
-import { fb_initialise }
+import { fb_initialise, fb_login }
     from './fb_io.mjs';
     window.fb_initialise   = fb_initialise;
+    window.fb_login = fb_login;
  
 /**************************************************************/
 // index.html main code
