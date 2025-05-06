@@ -13,17 +13,13 @@ console.log('%c main.mjs',
 /**************************************************************/
 // Import all the constants & functions required from fb_io module
 
-/******************************************************/
-// fb_initialise()
-// Called by index.html on page load
-// Initialise Firebase app
-// Input: n/a
-// Return: n/a
-/******************************************************/
-import { fb_initialise, fb_login }
+
+import { fb_initialise, fb_login, fb_AuthStateHandle, fb_logout}
     from './fb_io.mjs';
     window.fb_initialise   = fb_initialise;
     window.fb_login = fb_login;
+    window.fb_AuthStateHandle = fb_AuthStateHandle;
+    window.fb_logout = fb_logout;
  
 /**************************************************************/
 // index.html main code

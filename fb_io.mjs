@@ -14,11 +14,13 @@ console.log('%c fb_io.mjs', 'color: blue; background-color: white;');
 // Import all external constants & functions required
 /**************************************************************/
 // Import all the methods you want to call from the firebase modules
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js"; 
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"; 
   import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
   import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+  import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+  import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 //**************************************************************/
 // Firebase Configuration
@@ -43,44 +45,99 @@ const analytics = getAnalytics(FB_GAMEAPP);
 /**************************************************************/
 export { 
   fb_initialise, 
-  fb_login 
+  fb_login,
+  fb_AuthStateHandle, 
+  fb_logout,
 };
 
-//**************************************************************/
-// fb_initialise function
-/**************************************************************/
+/******************************************************/
+// fb_initialise()
+// Called by index.html on page load
+// Initialise Firebase app
+// Input: n/a
+// Return: n/a
+/******************************************************/
 function fb_initialise() {
   console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
   const FB_GAMEDB = getDatabase(FB_GAMEAPP);
   console.info(FB_GAMEDB); 
 }
-
-//**************************************************************/
-// fb_login function
-/**************************************************************/
+/******************************************************/
+// fb_login()
+// Called by index.html on page load
+// Log in to Firebase app
+// Input: n/a
+// Return: n/a
+/******************************************************/
 function fb_login(){
   const AUTH = getAuth();
-  onAuthStateChanged(AUTH, (user) => {
-    if (user) {
-      console.log("User is logged in", user.displayName);
-    } else {
-      console.log("User is not logged in.", user.displayName);
-    }
-  }, (error) => {
-    console.error("Auth state error:", error);
-  });
-
   const PROVIDER = new GoogleAuthProvider();
   PROVIDER.setCustomParameters({
     prompt: 'select_account' 
   });
-
-  signInWithPopup(AUTH, PROVIDER).then((result) => {
-    console.log("User Signed in", result.user);
-    document.getElementById('p_fbLogin').innerText = result.user.displayName;
+  signInWithPopup(AUTH, PROVIDER)
+  .then((result) => {
+    const user = result.user;
+    if (user) {
+      console.log("User Signed In", user);
+      document.getElementById('p_fbLogin').innerText = user.displayName || "Unknown User";
+    } else {
+      console.warn("No user returned after sign-in.");
+      document.getElementById('p_fbLogin').innerText = "Login worked with no data available";
+    }
   })
   .catch((error) => {
     console.error("Login error:", error);
     document.getElementById('p_fbLogin').innerText = "The Login has failed";
   });
 }
+
+/******************************************************/
+// fb_AuthStateHandle()
+// Called by index.html on page load
+// Detect for changes in the User's Authentication
+// Input: n/a
+// Return: n/a
+/******************************************************/
+function fb_AuthStateHandle(){
+  const AUTH = getAuth();
+  onAuthStateChanged(AUTH, (user) => {
+    if (user) {
+      console.log("User is logged in", user.displayName);
+    } else {
+      console.log("User is currently logged out"); 
+    }
+  }, (error) => {
+    console.error("Auth state error:", error);
+  });
+
+
+}
+
+/******************************************************/
+// fb_logout()
+// Called by index.html on page load
+// Log out of Firebase App
+// Input: n/a
+// Return: n/a
+/******************************************************/
+function fb_logout() {
+  const AUTH = getAuth();
+  signOut(AUTH)
+    .then(() => {
+      console.log("User signed out successfully.");
+      document.getElementById('p_fbLogin').innerText = "No User Currently";
+    })
+    .catch((error) => {
+      console.error("Logout error:", error);
+      document.getElementById('p_fbLogin').innerText = "The logout has failed";
+    });
+}
+
+const ref = ref(what-DB, where-to-write-to);
+
+
+
+/**************************************************************/
+//   END OF CODE
+/**************************************************************/
