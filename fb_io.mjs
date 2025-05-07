@@ -21,6 +21,9 @@ console.log('%c fb_io.mjs', 'color: blue; background-color: white;');
   import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
   import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
   import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+  import {get}from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+
 
 //**************************************************************/
 // Firebase Configuration
@@ -39,6 +42,7 @@ const firebaseConfig = {
 // Initialize Firebase app globally
 const FB_GAMEAPP = initializeApp(firebaseConfig); 
 const analytics = getAnalytics(FB_GAMEAPP); 
+const FB_GAMEDB = getDatabase(FB_GAMEAPP);
 
 //**************************************************************/
 // EXPORT FUNCTIONS
@@ -48,6 +52,8 @@ export {
   fb_login,
   fb_AuthStateHandle, 
   fb_logout,
+  fb_WriteRec,
+  fb_ReadRec,
 };
 
 /******************************************************/
@@ -59,7 +65,6 @@ export {
 /******************************************************/
 function fb_initialise() {
   console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
-  const FB_GAMEDB = getDatabase(FB_GAMEAPP);
   console.info(FB_GAMEDB); 
 }
 /******************************************************/
@@ -134,8 +139,68 @@ function fb_logout() {
     });
 }
 
-const ref = ref(what-DB, where-to-write-to);
 
+/******************************************************/
+// fb_WriteRec
+// Called by index.html on page load
+// Write a record to the realtime database
+// Input: n/a
+// Return: n/a
+/******************************************************/
+function fb_WriteRec() {
+
+  const recordPath = "Tree/Branches/newBranch"; 
+  const data = {
+    fruit: "Peach",
+    colour: "Purple",
+    size: "Large"
+  };
+    const DATAREF = ref(FB_GAMEDB, recordPath); // Create the reference
+    
+
+    
+   set(DATAREF, data)
+    .then(() => {
+      console.log("Data Successfully written");
+      document.getElementById("p_fbWriteRec").innerText = "Data written to " + recordPath;
+
+    })
+    .catch((error) => {
+      console.error("Error writing data:", error);
+      document.getElementById("p_fbWriteRec").innerText = "Failed to write to " + recordPath;
+
+    });
+
+}
+
+/******************************************************/
+// fb__ReadRec
+// Called by index.html on page load
+// Write a record to the realtime database
+// Input: n/a
+// Return: n/a
+/******************************************************/
+function fb_ReadRec(){
+
+  const READPATH = "Tree/leaves/Colour";
+  const DATAREF = ref(FB_GAMEDB, READPATH);
+  
+  get(DATAREF).then((snapshot) => {
+    const fb_data = snapshot.val();
+  
+    if (fb_data != null) {
+      console.log("Data successfully read:", fb_data);
+      document.getElementById("p_fbReadRec").innerText = "Read: " + fb_data;
+    } else {
+      console.warn("No data found at", READPATH);
+      document.getElementById("p_fbReadRec").innerText = "No data at " + READPATH;
+    }
+  }).catch((error) => {
+    console.error("Error reading data:", error);
+    document.getElementById("p_fbReadRec").innerText = "Failed to read from " + READPATH;
+  });
+
+  }
 
 
 /**************************************************************/
