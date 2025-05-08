@@ -6,7 +6,7 @@
 // All variables & function begin with fb_  all const with FB_
 // Diagnostic code lines have a comment appended to them //DIAG
 /**************************************************************/
-const COL_C = 'white';	 
+const COL_C = 'white';
 const COL_B = '#CD7F32';
 console.log('%c fb_io.mjs', 'color: blue; background-color: white;');
 
@@ -14,14 +14,14 @@ console.log('%c fb_io.mjs', 'color: blue; background-color: white;');
 // Import all external constants & functions required
 /**************************************************************/
 // Import all the methods you want to call from the firebase modules
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"; 
-  import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-  import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-  import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-  import {get}from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 
 
@@ -40,20 +40,21 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase app globally
-const FB_GAMEAPP = initializeApp(firebaseConfig); 
-const analytics = getAnalytics(FB_GAMEAPP); 
+const FB_GAMEAPP = initializeApp(firebaseConfig);
+const analytics = getAnalytics(FB_GAMEAPP);
 const FB_GAMEDB = getDatabase(FB_GAMEAPP);
 
 //**************************************************************/
 // EXPORT FUNCTIONS
 /**************************************************************/
-export { 
-  fb_initialise, 
+export {
+  fb_initialise,
   fb_login,
-  fb_AuthStateHandle, 
+  fb_AuthStateHandle,
   fb_logout,
   fb_WriteRec,
   fb_ReadRec,
+  fb_ReadAll,
 };
 
 /******************************************************/
@@ -65,7 +66,7 @@ export {
 /******************************************************/
 function fb_initialise() {
   console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
-  console.info(FB_GAMEDB); 
+  console.info(FB_GAMEDB);
 }
 /******************************************************/
 // fb_login()
@@ -74,27 +75,27 @@ function fb_initialise() {
 // Input: n/a
 // Return: n/a
 /******************************************************/
-function fb_login(){
+function fb_login() {
   const AUTH = getAuth();
   const PROVIDER = new GoogleAuthProvider();
   PROVIDER.setCustomParameters({
-    prompt: 'select_account' 
+    prompt: 'select_account'
   });
   signInWithPopup(AUTH, PROVIDER)
-  .then((result) => {
-    const user = result.user;
-    if (user) {
-      console.log("User Signed In", user);
-      document.getElementById('p_fbLogin').innerText = user.displayName || "Unknown User";
-    } else {
-      console.warn("No user returned after sign-in.");
-      document.getElementById('p_fbLogin').innerText = "Login worked with no data available";
-    }
-  })
-  .catch((error) => {
-    console.error("Login error:", error);
-    document.getElementById('p_fbLogin').innerText = "The Login has failed";
-  });
+    .then((result) => {
+      const user = result.user;
+      if (user) {
+        console.log("User Signed In", user);
+        document.getElementById('p_fbLogin').innerText = user.displayName || "Unknown User";
+      } else {
+        console.warn("No user returned after sign-in.");
+        document.getElementById('p_fbLogin').innerText = "Login worked with no data available";
+      }
+    })
+    .catch((error) => {
+      console.error("Login error:", error);
+      document.getElementById('p_fbLogin').innerText = "The Login has failed";
+    });
 }
 
 /******************************************************/
@@ -104,13 +105,13 @@ function fb_login(){
 // Input: n/a
 // Return: n/a
 /******************************************************/
-function fb_AuthStateHandle(){
+function fb_AuthStateHandle() {
   const AUTH = getAuth();
   onAuthStateChanged(AUTH, (user) => {
     if (user) {
       console.log("User is logged in", user.displayName);
     } else {
-      console.log("User is currently logged out"); 
+      console.log("User is currently logged out");
     }
   }, (error) => {
     console.error("Auth state error:", error);
@@ -149,17 +150,17 @@ function fb_logout() {
 /******************************************************/
 function fb_WriteRec() {
 
-  const recordPath = "Tree/Branches/newBranch"; 
+  const recordPath = "Tree/Branches/newBranch";
   const data = {
     fruit: "Peach",
     colour: "Purple",
     size: "Large"
   };
-    const DATAREF = ref(FB_GAMEDB, recordPath); // Create the reference
-    
+  const DATAREF = ref(FB_GAMEDB, recordPath); // Create the reference
 
-    
-   set(DATAREF, data)
+
+
+  set(DATAREF, data)
     .then(() => {
       console.log("Data Successfully written");
       document.getElementById("p_fbWriteRec").innerText = "Data written to " + recordPath;
@@ -180,14 +181,14 @@ function fb_WriteRec() {
 // Input: n/a
 // Return: n/a
 /******************************************************/
-function fb_ReadRec(){
+function fb_ReadRec() {
 
   const READPATH = "Tree/leaves/Colour";
   const DATAREF = ref(FB_GAMEDB, READPATH);
-  
+
   get(DATAREF).then((snapshot) => {
     const fb_data = snapshot.val();
-  
+
     if (fb_data != null) {
       console.log("Data successfully read:", fb_data);
       document.getElementById("p_fbReadRec").innerText = "Read: " + fb_data;
@@ -200,9 +201,38 @@ function fb_ReadRec(){
     document.getElementById("p_fbReadRec").innerText = "Failed to read from " + READPATH;
   });
 
-  }
+}
+/******************************************************/
+// fb_ReadAll
+// Called by index.html on page load
+// Read Path from realtime database
+// Input: n/a
+// Return: n/a
+/******************************************************/
+
+function fb_ReadAll(){
 
 
+
+  const READPATH = "Tree";
+    const DATAREF = ref(FB_GAMEDB, READPATH);
+  const dbReference = ref(DATAREF);
+
+  get(dbReference).then((snapshot) => {
+
+    var fb_data = snapshot.val();
+    if (fb_data != null) {
+      console.log("Data successfully read:", fb_data);
+      document.getElementById("p_fbReadAll").innerText = "Read: " + fb_data;
+    } else {
+
+    }
+
+  }).catch((error) => {
+
+  });
+
+}
 /**************************************************************/
 //   END OF CODE
 /**************************************************************/
