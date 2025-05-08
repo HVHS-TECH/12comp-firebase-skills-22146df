@@ -22,6 +22,10 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/fir
 import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { query, orderByChild, limitToFirst } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+
 
 
 
@@ -55,6 +59,7 @@ export {
   fb_WriteRec,
   fb_ReadRec,
   fb_ReadAll,
+  fb_UpdateRec,
 };
 
 /******************************************************/
@@ -210,27 +215,68 @@ function fb_ReadRec() {
 // Return: n/a
 /******************************************************/
 
-function fb_ReadAll(){
+function fb_ReadAll() {
 
 
 
   const READPATH = "Tree";
-    const DATAREF = ref(FB_GAMEDB, READPATH);
-  const dbReference = ref(DATAREF);
+  const DATAREF = ref(FB_GAMEDB, READPATH);
 
-  get(dbReference).then((snapshot) => {
+  get(DATAREF).then((snapshot) => {
 
     var fb_data = snapshot.val();
     if (fb_data != null) {
       console.log("Data successfully read:", fb_data);
       document.getElementById("p_fbReadAll").innerText = "Read: " + fb_data;
     } else {
-
+   console.error("Error reading data:", error);
+    document.getElementById("p_fbReadRec").innerText = "Failed to read from " + READPATH;
     }
 
   }).catch((error) => {
 
   });
+
+}
+/******************************************************/
+// fb_UpdateRec
+// Called by index.html on page load
+// update Path from realtime database
+// Input: n/a
+// Return: n/a
+/******************************************************/
+
+function fb_UpdateRec() {
+
+  const READPATH = "Tree";
+  const DATAREF = ref(FB_GAMEDB, READPATH);
+  const DATA = {
+  Branches: {
+    newBranch: {
+      fruit: "Mango",
+      colour: "Yellow",
+      size: "Medium"
+    }}}
+  update(DATAREF, DATA).then(() => {
+console.log ("Data successfully updated", DATA);
+document.getElementById("p_fbUpdateRec").innerText = "Updated " + DATA;
+  }).catch((error) => {
+   console.error("Error updating data:", error);
+    document.getElementById("p_fbUpdateRec").innerText = "Failed to update from " + READPATH;
+  });
+
+}
+
+/******************************************************/
+// fb_ReadSorted
+// Called by index.html on page load
+// Read Sorted Path from realtime database
+// Input: n/a
+// Return: n/a
+/******************************************************/
+
+
+function fb_ReadSorted(){
 
 }
 /**************************************************************/
