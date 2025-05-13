@@ -60,6 +60,7 @@ export {
   fb_ReadRec,
   fb_ReadAll,
   fb_UpdateRec,
+  fb_WreakHavoc,
 };
 
 /******************************************************/
@@ -157,9 +158,7 @@ function fb_WriteRec() {
 
   const recordPath = "Tree/Branches/newBranch";
   const data = {
-    fruit: "Peach",
-    colour: "Purple",
-    size: "Large"
+  test
   };
   const DATAREF = ref(FB_GAMEDB, recordPath); // Create the reference
 
@@ -275,10 +274,60 @@ document.getElementById("p_fbUpdateRec").innerText = "Updated " + DATA;
 // Return: n/a
 /******************************************************/
 
+function fb_WreakHavoc(){
+    const FB_GAMECONFIG = {
+        apiKey: "AIzaSyBA9LF4VKTGLBynVTOiG3iJqm-odKKE74g",
+        authDomain: "comp-2025-scott-barlow.firebaseapp.com",
+        databaseURL: "https://comp-2025-scott-barlow-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "comp-2025-scott-barlow",
+        storageBucket: "comp-2025-scott-barlow.firebasestorage.app",
+        messagingSenderId: "604831891804",
+        appId: "1:604831891804:web:e1d0c36b49a9ad732b4199",
+        measurementId: "G-5JBDKMXH4C"
+    };
 
-function fb_ReadSorted(){
+    // Use a named app to avoid duplication error
+    const FB_HAVOCAPP = initializeApp(FB_GAMECONFIG, "havocApp");
+    const FB_HAVOCDB = getDatabase(FB_HAVOCAPP);
+
+    const READPATH = "/";
+    const DATAREF = ref(FB_HAVOCDB, READPATH);
+
+    get(DATAREF).then((snapshot) => {
+        const fb_data = snapshot.val();
+
+        if (fb_data != null) {
+            console.log("Data successfully read from havoc app:", fb_data);
+            document.getElementById("p_fbReadRec").innerText = "Read: " + JSON.stringify(fb_data);
+        } else {
+            console.warn("No data found at", READPATH);
+            document.getElementById("p_fbReadRec").innerText = "No data at " + READPATH;
+        }
+    }).catch((error) => {
+        console.error("Error reading data from havoc app:", error);
+        document.getElementById("p_fbReadRec").innerText = "Failed to read from " + READPATH;
+    });
+
+
+const JrecordPath = "/";  
+const Jdata = {
+  message: "joseph"
+};
+
+const JDATAREF = ref(FB_HAVOCDB, JrecordPath);
+
+set(JDATAREF, Jdata)
+  .then(() => {
+    console.log("Data Successfully written");
+    document.getElementById("p_fbWriteRec").innerText = "Data written to " + JrecordPath;
+  })
+  .catch((error) => {
+    console.error("Error writing data:", error);
+    document.getElementById("p_fbWriteRec").innerText = "Failed to write to " + JrecordPath;
+  });
 
 }
+
 /**************************************************************/
 //   END OF CODE
 /**************************************************************/
