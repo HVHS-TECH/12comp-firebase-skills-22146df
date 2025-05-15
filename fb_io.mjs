@@ -61,6 +61,7 @@ export {
   fb_ReadAll,
   fb_UpdateRec,
   fb_WreakHavoc,
+  fb_ReadSorted,
 };
 
 /******************************************************/
@@ -222,19 +223,18 @@ function fb_ReadAll() {
   const DATAREF = ref(FB_GAMEDB, READPATH);
 
   get(DATAREF).then((snapshot) => {
-
-    var fb_data = snapshot.val();
-    if (fb_data != null) {
-      console.log("Data successfully read:", fb_data);
-      document.getElementById("p_fbReadAll").innerText = "Read: " + fb_data;
-    } else {
-   console.error("Error reading data:", error);
-    document.getElementById("p_fbReadRec").innerText = "Failed to read from " + READPATH;
-    }
-
-  }).catch((error) => {
-
-  });
+  var fb_data = snapshot.val();
+  if (fb_data != null) {
+    console.log("Data successfully read:", fb_data);
+    document.getElementById("p_fbReadAll").innerText = "Read: " + JSON.stringify(fb_data);
+  } else {
+    console.warn("No data found at", READPATH);
+    document.getElementById("p_fbReadAll").innerText = "No data at " + READPATH;
+  }
+}).catch((error) => {
+  console.error("Error reading data:", error);
+  document.getElementById("p_fbReadAll").innerText = "Failed to read from " + READPATH;
+});
 
 }
 /******************************************************/
@@ -267,9 +267,9 @@ document.getElementById("p_fbUpdateRec").innerText = "Updated " + DATA;
 }
 
 /******************************************************/
-// fb_ReadSorted
+// fb_WreakHavoc
 // Called by index.html on page load
-// Read Sorted Path from realtime database
+// Wreak havoc on unauthenticated people's firebase
 // Input: n/a
 // Return: n/a
 /******************************************************/
@@ -309,7 +309,7 @@ function fb_WreakHavoc(){
     });
 
 
-const JrecordPath = "/";  
+const JrecordPath = "/";    
 const Jdata = {
   message: "joseph"
 };
@@ -326,6 +326,35 @@ set(JDATAREF, Jdata)
     document.getElementById("p_fbWriteRec").innerText = "Failed to write to " + JrecordPath;
   });
 
+}
+
+/******************************************************/
+// fb_ReadSorted
+// Called by index.html on page load
+// Read Sorted Path from realtime database
+// Input: n/a
+// Return: n/a
+/******************************************************/
+
+function fb_ReadSorted() {
+  const sortKey = "Highscore";
+  const READPATH = "countries";
+  const DATAREF = query(ref(FB_GAMEDB, READPATH), orderByChild(sortKey), limitToFirst(3));
+
+  get(DATAREF).then((snapshot) => {
+    const fb_data = snapshot.val();
+
+    if (fb_data != null) {
+      console.log("Data successfully read from app:", fb_data);
+      document.getElementById("p_fbReadSorted").innerText = "Read: " + JSON.stringify(fb_data);
+    } else {
+      console.warn("No data found at", READPATH);
+      document.getElementById("p_fbReadSorted").innerText = "No data at " + READPATH;
+    }
+  }).catch((error) => {
+    console.error("Error reading data from app:", error);
+    document.getElementById("p_fbReadSorted").innerText = "Failed to read from " + READPATH;
+  });
 }
 
 /**************************************************************/
