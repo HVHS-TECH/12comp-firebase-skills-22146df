@@ -337,25 +337,29 @@ set(JDATAREF, Jdata)
 /******************************************************/
 
 function fb_ReadSorted() {
-  const sortKey = "Highscore";
+  const sortKey = "score";
   const READPATH = "countries";
-  const DATAREF = query(ref(FB_GAMEDB, READPATH), orderByChild(sortKey), limitToFirst(3));
+  const DATAREF = query(ref(FB_GAMEDB, READPATH), orderByChild(sortKey), limitToFirst(5));
 
-  get(DATAREF).then((snapshot) => {
-    const fb_data = snapshot.val();
+  get(DATAREF).then((allScoreDataSnapshot) => {
+    let scores = [];
 
-    if (fb_data != null) {
-      console.log("Data successfully read from app:", fb_data);
-      document.getElementById("p_fbReadSorted").innerText = "Read: " + JSON.stringify(fb_data);
-    } else {
-      console.warn("No data found at", READPATH);
-      document.getElementById("p_fbReadSorted").innerText = "No data at " + READPATH;
+    allScoreDataSnapshot.forEach(function (userScoreSnapshot) {
+      var obj = userScoreSnapshot.val();
+      scores.push(obj);
+    });
+    scores.reverse();
+
+    let output = "";
+    for (const obj of scores) {
+      console.log(obj);
+      output += JSON.stringify(obj) + "\n";
     }
-  }).catch((error) => {
-    console.error("Error reading data from app:", error);
-    document.getElementById("p_fbReadSorted").innerText = "Failed to read from " + READPATH;
+
+    document.getElementById("p_fbReadSorted").innerText = "Read:\n" + output;
   });
 }
+
 
 /**************************************************************/
 //   END OF CODE
