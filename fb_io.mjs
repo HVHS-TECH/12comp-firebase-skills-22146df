@@ -23,7 +23,7 @@ import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.
 import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { query, orderByChild, limitToFirst } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { query, orderByChild, limitToFirst, onValue, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 
 
@@ -62,6 +62,8 @@ export {
   fb_UpdateRec,
   fb_WreakHavoc,
   fb_ReadSorted,
+  fb_ReadOn,
+  fb_DeleteRec,
 };
 
 /******************************************************/
@@ -359,6 +361,62 @@ function fb_ReadSorted() {
     document.getElementById("p_fbReadSorted").innerText = "Read:\n" + output;
   });
 }
+/******************************************************/
+// fb_ReadOn
+// Called by index.html on page load
+// Read Sorted Path from realtime database
+// Input: n/a
+// Return: n/a
+/******************************************************/
+
+function fb_ReadOn() {
+  const READPATH = "/";
+  const DATAREF = ref(FB_GAMEDB, READPATH);
+
+  // onValue listens for changes and calls the callback whenever data updates
+  onValue(DATAREF, (snapshot) => {
+    const fb_data = snapshot.val();
+    if (fb_data != null) {
+      console.log("Data is being Monitored:", fb_data);
+      document.getElementById("p_fb_ReadOn").innerText = "Monitoring: " + JSON.stringify(fb_data);
+    } else {
+      console.warn("No data found at", READPATH);
+      document.getElementById("p_fb_ReadOn").innerText = "No data at " + READPATH;
+    }
+  }, (error) => {
+    // Error callback for onValue
+    console.error("Error reading data:", error);
+    document.getElementById("p_fb_ReadOn").innerText = "Failed to read from " + READPATH;
+  });
+}
+
+
+/******************************************************/
+// fb_DeleteRec
+// Called by index.html on page load
+// Delete Path/Key from realtime database
+// Input: n/a
+// Return: n/a
+/******************************************************/
+function fb_DeleteRec(){
+    const recordPath = "countries/Country4";
+  const DATAREF = ref(FB_GAMEDB, recordPath); // Create the reference
+
+ remove(DATAREF) .then(() => {
+      console.log("Data Successfully deleted");
+      document.getElementById("p_fbWriteRec").innerText = "Data deleted: " + recordPath;
+
+    })
+    .catch((error) => {
+      console.error("Error writing data:", error);
+      document.getElementById("p_fbWriteRec").innerText = "No Data at: " + recordPath;
+
+    });
+
+
+  
+}
+ 
 
 
 /**************************************************************/

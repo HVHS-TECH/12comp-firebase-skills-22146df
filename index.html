@@ -41,10 +41,9 @@
 
             <div class="column">
                 <button onclick="fb_ReadSorted()">t11: sorted read</button>
-                <!-- EXTENSIONS
-                <button onclick="">ext(a): listen for changes</button>
-                <button onclick="">ext(b): delete record</button>
-                -->
+           
+                <button onclick="fb_ReadOn()">ext(a): listen for changes</button>
+                <button onclick="fb_DeleteRec()">ext(b): delete record</button>
             </div>
         </div>
     </section>
@@ -62,7 +61,7 @@
             <p class="p_fbStatus">read sorted:<span id="p_fbReadSorted">n/a</span></p>
             <p class="p_fbStatus">Wreak Havoc:<span id="p_fb_WreakHavoc">n/a</span></p>
             
-            <p class="p_fbStatus">listen: <span id="p_fbListen"> n/a</span></p>
+            <p class="p_fbStatus">listen: <span id="p_fb_ReadOn"> n/a</span></p>
             <p class="p_fbStatus">delete rec: <span id="p_fbDeleteRec"> n/a</span></p>
             <p class="p_fbStatus">debug: <span id="p_debug"> n/a</span></p>
         </div>

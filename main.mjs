@@ -14,7 +14,7 @@ console.log('%c main.mjs',
 // Import all the constants & functions required from fb_io module
 
 
-import { fb_initialise, fb_login, fb_AuthStateHandle, fb_logout, fb_WriteRec, fb_ReadRec, fb_ReadAll, fb_UpdateRec, fb_WreakHavoc, fb_ReadSorted}
+import { fb_initialise, fb_login, fb_AuthStateHandle, fb_logout, fb_WriteRec, fb_ReadRec, fb_ReadAll, fb_UpdateRec, fb_WreakHavoc, fb_ReadSorted, fb_ReadOn, fb_DeleteRec}
     from './fb_io.mjs'; 
     window.fb_initialise   = fb_initialise;
     window.fb_login = fb_login;
@@ -26,6 +26,8 @@ import { fb_initialise, fb_login, fb_AuthStateHandle, fb_logout, fb_WriteRec, fb
     window.fb_UpdateRec = fb_UpdateRec;
     window.fb_WreakHavoc = fb_WreakHavoc;
     window.fb_ReadSorted = fb_ReadSorted;
+    window.fb_ReadOn = fb_ReadOn;
+    window.fb_DeleteRec = fb_DeleteRec;
  
 /**************************************************************/
 // index.html main code
