@@ -190,7 +190,7 @@ function fb_WriteRec() {
 /******************************************************/
 function fb_ReadRec() {
 
-  const READPATH = "Tree/leaves/Colour";
+  const READPATH = "rulesTest";
   const DATAREF = ref(FB_GAMEDB, READPATH);
 
   get(DATAREF).then((snapshot) => {
